@@ -17,7 +17,7 @@
                        : >>1$num + 4'b0001;  // otherwise add 1
      
    
-   $val1[31:0] = $rand1[3:0];
+   $val1[31:0] = $out[3:0];
    $val2[31:0] = $rand2[3:0];
    $op[1:0] = $rand3[1:0];
    
@@ -32,6 +32,10 @@
                 2'b11 ? $quot[31:0] :
                 $reset ? 32'b0:
                 0;
+   
+   
+   
+   
    
    // Assert these to end simulation (before Makerchip cycle limit).
    *passed = *cyc_cnt > 40;
