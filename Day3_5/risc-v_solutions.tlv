@@ -40,7 +40,9 @@
    |cpu
       @0//pc increment
          $reset = *reset;
-         $pc[31:0] = >>1$reset ? 32'b0 : (>>1$pc + 00000000000000000000000000000100);
+         $pc[31:0] = >>1$reset ? 32'b0 :
+            >>1$taken_br ? >>1$br_tgt_pc :
+            >>1$pc[31:0] + 4;
       
       @1//fetch
          $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];
@@ -69,11 +71,7 @@
                                     32'b0;
          //Decode, other fields of the instruction
          $opcode[6:0] = $instr[6:0]; // R, I, S, U, J, B instructions
-         $rd[4:0] = $inst[11:7]; //R, I, S, U, J instructions
-         $rs1[4:0] = $inst[19:15]; //R, I, S, B type instructions
-         $rs2[4:0] = $inst[24:20]; //R, S, B type instructions
-         $funct3[2:0] = $inst[14:12]; //R, I, S, B type instructions
-         $funct7[6:0] = $inst[31:25]; // R type instructions
+
          
          //Decode instruction field only if instruction has such a field
          $rd_valid = $is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr;
@@ -139,13 +137,19 @@
          $rf_wr_data[31:0] = $result;
          
          //implementing branching as a ternary operator
-         $taken_br = $is_beq ? ($src1_value == $src2_value) : $is_bne ? ($src1_value != $src2_value) :
+         $taken_br = $is_beq ? ($src1_value == $src2_value) :
+                     $is_bne ? ($src1_value != $src2_value) :
                      $is_blt ? (($src1_value < $src2_value) ^ ($src1_value[31] != $src2_value[31])) :
                      $is_bge ? (($src1_value >= $src2_value) ^ ($src1_value[31] != $src2_value[31])) :
-                     $is_bltu ? ($src1_value < $src2_value) : $is_bgeu ? ($src1_value >= $src2_value) :
+                     $is_bltu ? ($src1_value < $src2_value) :
+                     $is_bgeu ? ($src1_value >= $src2_value) :
                      1'b0;
          //where to branch to
          $br_tgt_pc[31:0] = $pc + $imm;
+         
+         
+         //testbench to check x10 for the value we expect if this design will pass
+         *passed = |cpu/xreg[10]>>5$value == (1+2+3+4+5+6+7+8+9) ;
          
       // YOUR CODE HERE
       // ...
