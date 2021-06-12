@@ -38,9 +38,14 @@
    m4_define_hier(['M4_IMEM'], M4_NUM_INSTRS)
 
    |cpu
-      @0
+      @0//pc increment
          $reset = *reset;
          $pc[31:0] = >>1$reset ? 32'b0 : (>>1$pc + 00000000000000000000000000000100);
+      
+      @1//fetch
+         $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];
+         $imem_rd_en = !$reset; //enable memory read
+         $instr[31:0] = $imem_rd_data[31:0];//read instruction
 
 
 
