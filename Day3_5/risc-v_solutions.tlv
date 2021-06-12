@@ -108,6 +108,16 @@
          $is_add = $dec_bits == 11'b0_000_0110011;
          `BOGUS_USE($is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
          
+         //Register file read
+         //The instrcutions we decode, we use the fields we decoded to tell us what our source
+         //registers are for the instructions and use those to read the register file
+         
+         //IMPORTANT
+         //LHS rd means read - RHS rd means destination register
+         $rf_rd_en1 = $rs1_valid;
+         $rf_rd_index1[4:0] = $rs1[4:0];
+         $rf_rd_en2 = $rs2_valid;
+         $rf_rd_index2[4:0] = $rs2[4:0];
 
          
       // YOUR CODE HERE
