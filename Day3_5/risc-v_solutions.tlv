@@ -127,6 +127,12 @@
          $src1_value[31:0] = $rf_rd_data1[31:0];
          $src2_value[31:0] = $rf_rd_data2[31:0];
 
+         //Arithmetic Logic Unit
+         $result[31:0] = $is_add ? $src1_value + $src2_value :
+                         $is_addi ? $src1_value + $imm :
+                         32'bx;
+
+         
       // YOUR CODE HERE
       // ...
 
