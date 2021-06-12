@@ -69,25 +69,36 @@
                                     32'b0;
          //Decode, other fields of the instruction
          $opcode[6:0] = $instr[6:0]; // R, I, S, U, J, B instructions
-         $rd[11:7] = $inst[11:7]; //R, I, S, U, J instructions
-         $rs1[19:15] = $inst[19:15]; //R, I, S, B type instructions
-         $rs2[24:20] = $inst[24:20]; //R, S, B type instructions
-         $funct3[14:12] = $inst[14:12]; //R, I, S, B type instructions
-         $funct7[31:25] = $inst[31:25]; // R type instructions
+         $rd[4:0] = $inst[11:7]; //R, I, S, U, J instructions
+         $rs1[4:0] = $inst[19:15]; //R, I, S, B type instructions
+         $rs2[4:0] = $inst[24:20]; //R, S, B type instructions
+         $funct3[2:0] = $inst[14:12]; //R, I, S, B type instructions
+         $funct7[6:0] = $inst[31:25]; // R type instructions
+         
+         //Decode instruction field only if instruction has such a field
+         $rd_valid = $is_r_instr || $is_i_instr || $is_u_instr || $is_j_instr;
+         ?$rd_valid
+            $rd[4:0] = $instr[11:7];
+            
+         $funct3_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
+         ?$funct3_valid
+            $funct3[2:0] = $instr[14:12];
+         
+         $rs1_valid = $is_r_instr || $is_i_instr || $is_s_instr || $is_b_instr;
+         ?$rs1_valid
+            $rs1[4:0] = $instr[19:15];
+         
+         $rs2_valid = $is_r_instr || $is_s_instr || $is_b_instr;
+         ?$rs2_valid
+            $rs2[4:0] = $instr[24:20];
+         
+         $funct7_valid = $is_r_instr;
+         ?$funct7_valid
+            $funct7[6:0] = $instr[31:25];
+         
 
-         $imm[4:0] = $inst[11:7]; // S type instructions
-         $imm[4:1] = $inst[11:8]; // B type instructions
-         $imm[11] = $inst[7]; // B type instructions
-         $imm[11:0] = $inst[31:20]; //I type instructions
-         $imm[11:5] = $inst[31:25]; //S type instructions
-         $imm[12] = $inst[31]; // B type instructions
-         $imm[10:5] = $inst[30:25]; // B type instructions 
-         $imm[31:12] = $inst[31:12]; // U type instructions
-         $imm[20] = $inst[31]; // J type instructions
-         $imm[10:1] = $inst[30:21]; // J type instructions
-         $imm[11] = $inst[20]; // J type instructions
-         $imm[19:12] = $inst[19:12]; // J type instructions
 
+         
       // YOUR CODE HERE
       // ...
 
