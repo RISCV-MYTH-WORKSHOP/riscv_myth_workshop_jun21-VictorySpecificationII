@@ -46,11 +46,10 @@
          $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];
          $imem_rd_en = !$reset;
          $instr[31:0] = $imem_rd_data[31:0];
-         
         //decode, find out what type of instruction it is (I or S or R or U or J or B)      
-         
          $is_i_instr = $instr[6:2] ==? 5'b0000x || $instr[6:2] ==? 5'b001x0 || $instr[6:2] ==? 5'b11001;
-              
+         
+         
          $is_s_instr = $instr[6:2] ==? 5'b0100x;
          
          $is_r_instr = $instr[6:2] ==? 5'b01011 || $instr[6:2] ==? 5'b011x0 || $instr[6:2] ==? 5'b10100;
@@ -60,6 +59,34 @@
          $is_j_instr = $instr[6:2] ==? 5'b11011;
                   
          $is_b_instr = $instr[6:2] ==? 5'b11000;
+         
+         //Decode fields for ISUJB type instructions
+         $imm[31:0] = $is_i_instr ? {{21{$instr[31]}}, $instr[30:20]} :
+                      $is_s_instr ? {{21{$instr[31]}}, $instr[30:25], $instr[11:7]} :
+                      $is_b_instr ? {{20{$instr[31]}}, $instr[7], $instr[30:25], $instr[11:8], 1'b0} :
+                      $is_u_instr ? {$instr[31:12], 12'b0} :
+                      $is_j_instr ? {{12{$instr[31]}}, $instr[19:12], $instr[20], $instr[30:21], 1'b0} :
+                                    32'b0;
+         //Decode, other fields of the instruction
+         $opcode[6:0] = $instr[6:0]; // R, I, S, U, J, B instructions
+         $rd[11:7] = $inst[11:7]; //R, I, S, U, J instructions
+         $rs1[19:15] = $inst[19:15]; //R, I, S, B type instructions
+         $rs2[24:20] = $inst[24:20]; //R, S, B type instructions
+         $funct3[14:12] = $inst[14:12]; //R, I, S, B type instructions
+         $funct7[31:25] = $inst[31:25]; // R type instructions
+
+         $imm[4:0] = $inst[11:7]; // S type instructions
+         $imm[4:1] = $inst[11:8]; // B type instructions
+         $imm[11] = $inst[7]; // B type instructions
+         $imm[11:0] = $inst[31:20]; //I type instructions
+         $imm[11:5] = $inst[31:25]; //S type instructions
+         $imm[12] = $inst[31]; // B type instructions
+         $imm[10:5] = $inst[30:25]; // B type instructions 
+         $imm[31:12] = $inst[31:12]; // U type instructions
+         $imm[20] = $inst[31]; // J type instructions
+         $imm[10:1] = $inst[30:21]; // J type instructions
+         $imm[11] = $inst[20]; // J type instructions
+         $imm[19:12] = $inst[19:12]; // J type instructions
 
       // YOUR CODE HERE
       // ...
