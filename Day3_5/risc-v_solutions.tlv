@@ -132,6 +132,11 @@
                          $is_addi ? $src1_value + $imm :
                          32'bx;
 
+         //hooking up the result and destination register lines to write to the register file
+         //write is disabled if rd is equal to 0
+         $rf_wr_en = $rd_valid && $rd != 5'b0; 
+         $rf_wr_index[4:0] = $rd;
+         $rf_wr_data[31:0] = $result;
          
       // YOUR CODE HERE
       // ...
