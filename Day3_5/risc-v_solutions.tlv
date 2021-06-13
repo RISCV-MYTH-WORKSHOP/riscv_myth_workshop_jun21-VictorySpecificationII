@@ -43,11 +43,18 @@
          
          $start = !$reset && >>1$reset;
          $valid = $reset ? 1'b0 : $start ? 1'b1 : >>3$valid;
+
          
          $reset = *reset;
-         $pc[31:0] = >>1$reset ? 32'b0 :
-            >>1$taken_br ? >>1$br_tgt_pc :
-            >>1$pc[31:0] + 4;
+         
+         //valid_taken_br integrated into pc
+         //to take care of invalid instructions
+         $pc[31:0] = >>3$valid_taken_br ? >>3$br_tgt_pc :
+                     >>1$reset ? 0 : >>1$pc[31:0] + 4;
+                     
+         //$pc[31:0] = >>1$reset ? 32'b0 :
+         //   >>1$taken_br ? >>1$br_tgt_pc :
+         //   >>1$pc[31:0] + 4;
       
       @1//fetch
          $imem_rd_addr[M4_IMEM_INDEX_CNT-1:0] = $pc[M4_IMEM_INDEX_CNT+1:2];
@@ -149,6 +156,9 @@
                      $is_bltu ? ($src1_value < $src2_value) :
                      $is_bgeu ? ($src1_value >= $src2_value) :
                      1'b0;
+                     
+         $valid_taken_br = $valid && $taken_br;
+         
          //where to branch to
          $br_tgt_pc[31:0] = $pc + $imm;
          
