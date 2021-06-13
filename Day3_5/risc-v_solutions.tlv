@@ -1,6 +1,8 @@
 \m4_TLV_version 1d: tl-x.org
 \SV
    //  This code can be found in: https://github.com/stevehoover/RISC-V_MYTH_Workshop
+   //For this core to become linux ready, need to implement F M and A type instructions along with priviledged mode support
+   //TL-Verilog to Verilog conversion
    
    m4_include_lib(['https://raw.githubusercontent.com/stevehoover/RISC-V_MYTH_Workshop/c1719d5b338896577b79ee76c2f443ca2a76e14f/tlv_lib/risc-v_shell_lib.tlv'])
 
