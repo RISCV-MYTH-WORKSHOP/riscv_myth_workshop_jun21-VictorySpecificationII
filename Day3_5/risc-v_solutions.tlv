@@ -114,10 +114,39 @@
          $is_bltu = $dec_bits ==? 11'bx_110_1100011;
          $is_bgeu = $dec_bits ==? 11'bx_111_1100011;
          $is_blt = $dec_bits ==? 11'bx_100_1100011;
+         
          $is_addi = $dec_bits ==? 11'bx_000_0010011;
          $is_add = $dec_bits == 11'b0_000_0110011;
-         `BOGUS_USE($is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
          
+         $is_andi = $dec_bits ==? 11'bx_111_0010011; 
+         $is_ori  = $dec_bits ==? 11'bx_110_0010011;
+         $is_xori = $dec_bits ==? 11'bx_100_0010011;
+         $is_slli = $dec_bits ==? 11'b0_001_0010011;
+         $is_srli = $dec_bits ==? 11'b0_101_0010011;
+         $is_and = $dec_bits ==? 11'b0_111_0010011; 
+         
+         $is_or = $dec_bits ==? 11'b0_110_0010011;
+         $is_xor = $dec_bits ==? 11'b0_100_0010011; 
+         $is_sll = $dec_bits ==? 11'b0_110_0010011; 
+         $is_srl = $dec_bits ==? 11'b0_101_0010011; 
+         $is_sub = $dec_bits ==? 11'b1_000_0010011; 
+         $is_sltu = $dec_bits ==? 11'b0_011_0010011;
+         $is_sltiu = $dec_bits ==? 11'bx_011_0010011;
+         $is_lui = $dec_bits ==? 11'bx_xxx_0110111; 
+         $is_auipc = $dec_bits ==? 11'bx_xxx_0110111;
+         $is_jal = $dec_bits ==? 11'bx_xxx_1101111;
+         
+         $is_jalr = $dec_bits ==? 11'bx_000_1101111;
+         $is_srai = $dec_bits ==? 11'b1_101_0010011;
+         $is_slt = $dec_bits ==? 11'b0_010_0010011; 
+         $is_slti = $dec_bits ==? 11'bx_010_0010011;
+         $is_sra = $dec_bits ==? 11'b1_101_0010011;
+         $is_sb = $dec_bits ==? 11'bx_000_0100011; 
+         $is_sh = $dec_bits ==? 11'bx_001_0100011; 
+         $is_sw = $dec_bits ==? 11'bx_010_0100011;
+         $is_load = $dec_bits ==? 11'bx_xxx_0000011;
+         
+         `BOGUS_USE($is_beq $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add)
          //Register file read
          //The instrcutions we decode, we use the fields we decoded to tell us what our source
          //registers are for the instructions and use those to read the register file
