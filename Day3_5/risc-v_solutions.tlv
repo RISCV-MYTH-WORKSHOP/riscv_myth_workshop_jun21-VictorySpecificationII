@@ -106,7 +106,7 @@
          ?$funct7_valid
             $funct7[6:0] = $instr[31:25];
          
-         //Decode individual instructions
+     @2 //Decode individual instructions
          $dec_bits[10:0] = {$funct7[5],$funct3,$opcode};
          $is_beq = $dec_bits ==? 11'bx_000_1100011;
          $is_bne = $dec_bits ==? 11'bx_001_1100011;
@@ -137,7 +137,7 @@
          $src1_value[31:0] = $rf_rd_data1[31:0];
          $src2_value[31:0] = $rf_rd_data2[31:0];
 
-         //Arithmetic Logic Unit
+       @3 //Arithmetic Logic Unit
          $result[31:0] = $is_add ? $src1_value + $src2_value :
                          $is_addi ? $src1_value + $imm :
                          32'bx;
@@ -185,8 +185,8 @@
    //  o CPU visualization
    |cpu
       m4+imem(@1)    // Args: (read stage)
-      m4+rf(@1, @1)  // Args: (read stage, write stage) - if equal, no register bypass is required
-      //m4+dmem(@4)    // Args: (read/write stage)
+      m4+rf(@2, @3)  // Args: (read stage, write stage) - if equal, no register bypass is required
+      m4+dmem(@4)    // Args: (read/write stage)
    
    //m4+cpu_viz(@4)    // For visualisation, argument should be at least equal to the last stage of CPU logic. @4 would work for all labs.
 \SV
