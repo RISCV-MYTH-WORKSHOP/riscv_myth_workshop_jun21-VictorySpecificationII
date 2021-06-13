@@ -203,9 +203,14 @@
 
          //hooking up the result and destination register lines to write to the register file
          //write is disabled if rd is equal to 0
-         $rf_wr_en = $rd_valid && $rd != 5'b0; 
-         $rf_wr_index[4:0] = $rd;
-         $rf_wr_data[31:0] = $result;
+         //$rf_wr_en = $rd_valid && $rd != 5'b0; 
+         //$rf_wr_index[4:0] = $rd;
+         //$rf_wr_data[31:0] = $result;
+         
+         $rf_wr_en =  ($rd_valid) && ($rd != 5'b0) && ($valid) || (>>2$valid_load);
+         $rf_wr_index[4:0] = >>2$valid_load ? >>2$rd:
+                             $rd;
+         $rf_wr_data[31:0] = >>2$valid_load ? >>2$ld_data: $result;
          
          //implementing branching as a ternary operator
          $taken_br = $is_beq ? ($src1_value == $src2_value) :
@@ -223,7 +228,15 @@
          //where to branch to
          $br_tgt_pc[31:0] = $pc + $imm;
          
+       @4
+         //DATA MEMORY
+         $dmem_wr_en = ($is_s_instr) && ($valid);
+         $dmem_rd_en = ($is_load) && ($valid);
+         $dmem_wr_data[31:0] = $src2_value;
+         $dmem_addr[3:0] = $result[5:2];
          
+      @5
+         $ld_data[31:0] = $dmem_rd_data;
          //testbench to check x10 for the value we expect if this design will pass
          *passed = |cpu/xreg[10]>>5$value == (1+2+3+4+5+6+7+8+9) ;
          
