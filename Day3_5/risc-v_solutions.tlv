@@ -41,8 +41,8 @@
       @0//pc increment
 
          
-         $start = !$reset && >>1$reset;
-         $valid = $reset ? 1'b0 : $start ? 1'b1 : >>3$valid;
+         //$start = !$reset && >>1$reset;
+         //$valid = $reset ? 1'b0 : $start ? 1'b1 : >>3$valid;
 
          
          $reset = *reset;
@@ -50,6 +50,7 @@
          //valid_taken_br integrated into pc
          //to take care of invalid instructions
          $pc[31:0] = >>3$valid_taken_br ? >>3$br_tgt_pc :
+                              >>3$valid_load ? >>3$pc + 32'd4 :
                      >>1$reset ? 0 : >>1$pc[31:0] + 4;
                      
          //$pc[31:0] = >>1$reset ? 32'b0 :
@@ -216,6 +217,8 @@
                      1'b0;
                      
          $valid_taken_br = $valid && $taken_br;
+         $valid_load = $is_load && $valid ;
+         $valid = !((>>1$valid_taken_br || >>2$valid_taken_br) || (>>1$valid_load || >>2$valid_load));
          
          //where to branch to
          $br_tgt_pc[31:0] = $pc + $imm;
