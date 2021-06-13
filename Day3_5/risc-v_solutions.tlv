@@ -134,8 +134,13 @@
          //this is register file read part 2
          //IMPORTANT
          // RHS rd means destination register
-         $src1_value[31:0] = $rf_rd_data1[31:0];
-         $src2_value[31:0] = $rf_rd_data2[31:0];
+         //$src1_value[31:0] = $rf_rd_data1[31:0];
+         //$src2_value[31:0] = $rf_rd_data2[31:0];
+         
+         //updated values to perform register file bypass to address read after write hazard
+         $src1_value[31:0] = $rd == $rs1 ? >>1$result : $rf_rd_data1;         
+         $src2_value[31:0] = $rd == $rs2 ? >>1$result : $rf_rd_data2;
+         
 
        @3 //Arithmetic Logic Unit
          $result[31:0] = $is_add ? $src1_value + $src2_value :
