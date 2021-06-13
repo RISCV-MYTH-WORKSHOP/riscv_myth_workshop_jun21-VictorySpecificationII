@@ -39,6 +39,11 @@
 
    |cpu
       @0//pc increment
+
+         
+         $start = !$reset && >>1$reset;
+         $valid = $reset ? 1'b0 : $start ? 1'b1 : >>3$valid;
+         
          $reset = *reset;
          $pc[31:0] = >>1$reset ? 32'b0 :
             >>1$taken_br ? >>1$br_tgt_pc :
